@@ -1,16 +1,6 @@
 version: '3'
 services:
 
-  postgres:
-    image: postgres:alpine
-    container_name: postgres
-    restart: always
-    expose:
-      - 5432
-    network_mode: "host"
-    volumes:
-      - "postgres:/var/lib/postgresql/data"
-
   mongo:
     image: mongo
     container_name: mongo
@@ -20,6 +10,16 @@ services:
     network_mode: "host"
     volumes:
       - "mongo:/data/db"
+
+  postgres:
+    image: postgres:alpine
+    container_name: postgres
+    restart: always
+    expose:
+      - 5432
+    network_mode: "host"
+    volumes:
+      - "postgres:/var/lib/postgresql/data"
 
   rabbit:
     image: rabbitmq:management-alpine
@@ -32,7 +32,18 @@ services:
     volumes:
       - "rabbit:/var/lib/rabbit"
 
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    expose:
+      - 6379
+    network_mode: "host"
+    volumes:
+      - "redis:/data"
+
 volumes:
-  postgres: {}
   mongo: {}
+  postgres: {}
   rabbit: {}
+  redis: {}
