@@ -21,6 +21,18 @@ services:
     volumes:
       - "postgres:/var/lib/postgresql/data"
 
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    expose:
+      - 3306
+    network_mode: "host"
+    volumes:
+      - "mysql:/var/lib/mysql"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=root"
+
   rabbit:
     image: rabbitmq:management-alpine
     container_name: rabbit
@@ -45,5 +57,6 @@ services:
 volumes:
   mongo: {}
   postgres: {}
+  mysql: {}
   rabbit: {}
   redis: {}
