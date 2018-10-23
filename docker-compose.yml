@@ -54,9 +54,25 @@ services:
     volumes:
       - "redis:/data"
 
+  influxdb:
+    image: influxdb:alpine
+    container_name: influxdb
+    restart: always
+    expose:
+      - 8086
+      - 8083
+    network_mode: "host"
+    volumes:
+      - "influxdb:/var/lib/influxdb"
+    environment:
+      - "INFLUXDB_ADMIN_ENABLED=true"
+      - "INFLUXDB_ADMIN_USER=influxdb"
+      - "INFLUXDB_ADMIN_PASSWORD=influxdb"
+
 volumes:
   mongo: {}
   postgres: {}
   mysql: {}
   rabbit: {}
   redis: {}
+  influxdb: {}
