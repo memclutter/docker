@@ -21,17 +21,17 @@ services:
     volumes:
       - "postgres:/var/lib/postgresql/data"
 
-  mysql:
-    image: mysql:latest
-    container_name: mysql
-    restart: always
-    expose:
-      - 3306
-    network_mode: "host"
-    volumes:
-      - "mysql:/var/lib/mysql"
-    environment:
-      - "MYSQL_ROOT_PASSWORD=root"
+#  mysql:
+#    image: mysql:latest
+#    container_name: mysql
+#    restart: always
+#    expose:
+#      - 3306
+#    network_mode: "host"
+#    volumes:
+#      - "mysql:/var/lib/mysql"
+#    environment:
+#      - "MYSQL_ROOT_PASSWORD=root"
 
   rabbit:
     image: rabbitmq:management-alpine
@@ -54,20 +54,49 @@ services:
     volumes:
       - "redis:/data"
 
-  influxdb:
-    image: influxdb:alpine
-    container_name: influxdb
-    restart: always
-    expose:
-      - 8086
-      - 8083
+#  influxdb:
+#    image: influxdb
+#    container_name: influxdb
+#    restart: always
+#    expose:
+#      - 8086
+#      - 8083
+#    network_mode: "host"
+#    volumes:
+#      - "influxdb:/var/lib/influxdb"
+#    environment:
+#      - "INFLUXDB_ADMIN_ENABLED=true"
+#      - "INFLUXDB_ADMIN_USER=influxdb"
+#      - "INFLUXDB_ADMIN_PASSWORD=influxdb"
+
+  nsqlookupd:
+    image: nsqio/nsq
+    command: /nsqlookupd
     network_mode: "host"
+    expose:
+      - "4160"
+      - "4161"
+
+  nsqd:
+    image: nsqio/nsq
+    command: /nsqd --lookupd-tcp-address=127.0.0.1:4160 --data-path=/data
+    network_mode: "host"
+    depends_on:
+      - nsqlookupd
+    expose:
+      - "4150"
+      - "4151"
     volumes:
-      - "influxdb:/var/lib/influxdb"
-    environment:
-      - "INFLUXDB_ADMIN_ENABLED=true"
-      - "INFLUXDB_ADMIN_USER=influxdb"
-      - "INFLUXDB_ADMIN_PASSWORD=influxdb"
+      - "nsqd:/data"
+
+  nsqadmin:
+    image: nsqio/nsq
+    command: /nsqadmin --lookupd-http-address=127.0.0.1:4161
+    network_mode: "host"
+    depends_on:
+      - nsqlookupd  
+    expose:
+      - "4171"
 
 volumes:
   mongo: {}
@@ -76,3 +105,4 @@ volumes:
   rabbit: {}
   redis: {}
   influxdb: {}
+  nsqd: {}
