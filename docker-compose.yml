@@ -1,4 +1,15 @@
 version: '3'
+
+volumes:
+  mongo_db: {}
+  mongo_configdb: {}
+  psql_data: {}
+  mysql_data: {}
+  rabbit_data: {}
+  redis_data: {}
+  influx_data: {}
+  nsq_data: {}
+
 services:
 
   mongo:
@@ -9,29 +20,30 @@ services:
       - 27017
     network_mode: "host"
     volumes:
-      - "mongo:/data/db"
+      - "mongo_db:/data/db"
+      - "mongo_configdb:/data/configdb"
 
-  postgres:
+  psql:
     image: postgres:alpine
-    container_name: postgres
+    container_name: psql
     restart: always
     expose:
       - 5432
     network_mode: "host"
     volumes:
-      - "postgres:/var/lib/postgresql/data"
+      - "psql_data:/var/lib/postgresql/data"
 
-#  mysql:
-#    image: mysql:latest
-#    container_name: mysql
-#    restart: always
-#    expose:
-#      - 3306
-#    network_mode: "host"
-#    volumes:
-#      - "mysql:/var/lib/mysql"
-#    environment:
-#      - "MYSQL_ROOT_PASSWORD=root"
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    expose:
+      - 3306
+    network_mode: "host"
+    volumes:
+      - "mysql_data:/var/lib/mysql"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=root"
 
   rabbit:
     image: rabbitmq:management-alpine
@@ -42,7 +54,7 @@ services:
       - 15672
     network_mode: "host"
     volumes:
-      - "rabbit:/var/lib/rabbit"
+      - "rabbit_data:/var/lib/rabbit"
 
   redis:
     image: redis:alpine
@@ -52,22 +64,22 @@ services:
       - 6379
     network_mode: "host"
     volumes:
-      - "redis:/data"
+      - "redis_data:/data"
 
-#  influxdb:
-#    image: influxdb
-#    container_name: influxdb
-#    restart: always
-#    expose:
-#      - 8086
-#      - 8083
-#    network_mode: "host"
-#    volumes:
-#      - "influxdb:/var/lib/influxdb"
-#    environment:
-#      - "INFLUXDB_ADMIN_ENABLED=true"
-#      - "INFLUXDB_ADMIN_USER=influxdb"
-#      - "INFLUXDB_ADMIN_PASSWORD=influxdb"
+  influx:
+    image: influxdb
+    container_name: influx
+    restart: always
+    expose:
+      - 8086
+      - 8083
+    network_mode: "host"
+    volumes:
+      - "influx_data:/var/lib/influxdb"
+    environment:
+      - "INFLUXDB_ADMIN_ENABLED=true"
+      - "INFLUXDB_ADMIN_USER=influxdb"
+      - "INFLUXDB_ADMIN_PASSWORD=influxdb"
 
   nsqlookupd:
     image: nsqio/nsq
@@ -87,7 +99,7 @@ services:
       - "4150"
       - "4151"
     volumes:
-      - "nsqd:/data"
+      - "nsqd_data:/data"
 
   nsqadmin:
     image: nsqio/nsq
@@ -97,12 +109,3 @@ services:
       - nsqlookupd  
     expose:
       - "4171"
-
-volumes:
-  mongo: {}
-  postgres: {}
-  mysql: {}
-  rabbit: {}
-  redis: {}
-  influxdb: {}
-  nsqd: {}
