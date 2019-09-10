@@ -8,7 +8,7 @@ volumes:
   rabbit_data: {}
   redis_data: {}
   influx_data: {}
-  nsq_data: {}
+  nsqd_data: {}
 
 services:
 
