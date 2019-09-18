@@ -30,6 +30,10 @@ services:
     expose:
       - 5432
     network_mode: "host"
+    environment:
+      POSTGRES_USER: ${PSQL_USER}
+      POSTGRES_PASSWORD: ${PSQL_PASS}
+      POSTGRES_DB: ${PSQL_DB}
     volumes:
       - "psql_data:/var/lib/postgresql/data"
 
@@ -43,7 +47,10 @@ services:
     volumes:
       - "mysql_data:/var/lib/mysql"
     environment:
-      - "MYSQL_ROOT_PASSWORD=root"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASS: ${MYSQL_PASS}
+      MYSQL_DB: ${MYSQL_DB}
 
   rabbit:
     image: rabbitmq:management-alpine
@@ -77,12 +84,13 @@ services:
     volumes:
       - "influx_data:/var/lib/influxdb"
     environment:
-      - "INFLUXDB_ADMIN_ENABLED=true"
-      - "INFLUXDB_ADMIN_USER=influxdb"
-      - "INFLUXDB_ADMIN_PASSWORD=influxdb"
+      INFLUXDB_ADMIN_ENABLED: ${INFLUX_ADMIN}
+      INFLUXDB_ADMIN_USER: ${INFLUX_ADMIN_USER}
+      INFLUXDB_ADMIN_PASSWORD: ${INFLUX_ADMIN_PASS}
 
   nsqlookupd:
-    image: nsqio/nsq
+    image: nsqio/nsq:v1.2.0
+    container_name: nsqlookupd
     command: /nsqlookupd
     network_mode: "host"
     expose:
@@ -90,7 +98,8 @@ services:
       - "4161"
 
   nsqd:
-    image: nsqio/nsq
+    image: nsqio/nsq:v1.2.0
+    container_name: nsqd
     command: /nsqd --lookupd-tcp-address=127.0.0.1:4160 --data-path=/data
     network_mode: "host"
     depends_on:
@@ -102,7 +111,8 @@ services:
       - "nsqd_data:/data"
 
   nsqadmin:
-    image: nsqio/nsq
+    image: nsqio/nsq:v1.2.0
+    container_name: nsqadmin
     command: /nsqadmin --lookupd-http-address=127.0.0.1:4161
     network_mode: "host"
     depends_on:
