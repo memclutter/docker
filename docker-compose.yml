@@ -40,7 +40,7 @@ services:
 
   pipeline:
     image: pipelinedb/pipelinedb-postgresql-11
-    container_name: psql
+    container_name: pipeline
     restart: always
     expose:
       - 5433
