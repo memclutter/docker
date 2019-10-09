@@ -53,7 +53,7 @@ services:
       - "pipeline_data:/var/lib/postgresql/data"
 
   mysql:
-    image: mysql:latest
+    image: mysql:5.7
     container_name: mysql
     restart: always
     expose:
@@ -64,8 +64,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
       MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASS: ${MYSQL_PASS}
-      MYSQL_DB: ${MYSQL_DB}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
+      MYSQL_DATABASE: ${MYSQL_DB}
 
   rabbit:
     image: rabbitmq:management-alpine
