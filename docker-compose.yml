@@ -4,6 +4,7 @@ volumes:
   mongo_db: {}
   mongo_configdb: {}
   psql_data: {}
+  ts_data: {}
   pipeline_data: {}
   mysql_data: {}
   rabbit_data: {}
@@ -37,6 +38,20 @@ services:
       POSTGRES_DB: ${PSQL_DB}
     volumes:
       - "psql_data:/var/lib/postgresql/data"
+
+  ts:
+    image: timescale/timescaledb:latest-pg11
+    container_name: ts
+    restart: always
+    expose:
+      - 5432
+    network_mode: "host"
+    environment:
+      POSTGRES_USER: ${TS_USER}
+      POSTGRES_PASSWORD: ${TS_PASS}
+      POSTGRES_DB: ${TS_DB}
+    volumes:
+      - "ts_data:/var/lib/postgresql/data"
 
   pipeline:
     image: pipelinedb/pipelinedb-postgresql-11
