@@ -11,8 +11,19 @@ volumes:
   redis_data: {}
   influx_data: {}
   nsqd_data: {}
+  tarantool_data: {}
 
 services:
+
+  tarantool:
+    image: tarantool/tarantool:2
+    container_name: tarantool
+    restart: always
+    expose:
+      - 3301
+    network_mode: "host"
+    volumes:
+      - "tarantool_data:/var/lib/tarantool"
 
   mongo:
     image: mongo
