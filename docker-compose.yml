@@ -103,6 +103,10 @@ services:
     network_mode: "host"
     volumes:
       - "rabbit_data:/var/lib/rabbit"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASS}
+      RABBITMQ_DEFAULT_VHOST: ${RABBIT_VHOST}
 
   redis:
     image: redis:alpine
